@@ -1,0 +1,56 @@
+﻿@model IEnumerable<NewsWebsite.Models.Article>
+@{
+    ViewData["Title"] = "قائمة الأخبار";
+}
+
+<h2>قائمة الأخبار</h2>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <label>فئة:</label>
+        <select asp-items="ViewBag.Categories" name="category" class="form-control" onchange="this.form.submit()">
+            <option value="">الكل</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>الحالة:</label>
+        <select name="isPublished" class="form-control" onchange="this.form.submit()">
+            <option value="">الكل</option>
+            <option value="true">منشور</option>
+            <option value="false">غير منشور</option>
+        </select>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>العنوان</th>
+            <th>الفئة</th>
+            <th>الكاتب</th>
+            <th>تاريخ النشر</th>
+            <th>الحالة</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Category.Name</td>
+                <td>@item.Author.FullName</td>
+                <td>@item.PublishDate.ToShortDateString()</td>
+                <td>@(item.IsPublished ? "منشور" : "غير منشور")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">تعديل</a>
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" asp-for="@item.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف الخبر؟');">حذف</button>
+                    </form>
+                    <a asp-action="TogglePublish" asp-route-id="@item.Id" class="btn btn-info btn-sm">@(item.IsPublished ? "إلغاء النشر" : "نشر")</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

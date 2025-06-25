@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Analytics Dashboard";
+}
+
+<h2>Analytics Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Total Views: @ViewBag.TotalViews</h3>
+        <canvas id="categoryChart"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h3>Top Articles</h3>
+        <ul>
+            @foreach (var article in ViewBag.TopArticles)
+            {
+                <li>@article.Title (@article.ViewCount views)</li>
+            }
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.js"></script>
+    @{
+        var performanceList = ((IEnumerable<dynamic>)ViewBag.CategoryPerformance).ToList();
+        var labels = string.Join(",", performanceList.Select(c => $"\"{c.Name}\""));
+        var values = string.Join(",", performanceList.Select(c => c.ViewCount));
+    }
+    <script>
+        var ctx = document.getElementById('categoryChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(labels)],
+                datasets: [{
+                    label: 'Article Views',
+                    data: [@Html.Raw(values)],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+

@@ -1,0 +1,44 @@
+﻿@model List<NewsWebsite.Models.Article>
+@{
+    ViewData["Title"] = ViewBag.Category ?? "All Articles";
+    int page = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    @foreach (var article in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(article.ImageUrl))
+                {
+                    <img src="@article.ImageUrl" class="card-img-top" alt="@article.Title">
+                }
+                <div class="card-body">
+                    <h5 class="card-title"><a asp-action="Details" asp-route-id="@article.Id">@article.Title</a></h5>
+                    <p class="card-text">@article.Content.Substring(0, Math.Min(100, article.Content.Length))...</p>
+                    <p class="card-text"><small class="text-muted">By @article.Author.FullName on @article.PublishDate.ToShortDateString()</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        <li class="page-item @(page == 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-category="@ViewBag.Category" asp-route-page="@(page - 1)">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == page ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-category="@ViewBag.Category" asp-route-page="@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(page == totalPages ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-category="@ViewBag.Category" asp-route-page="@(page + 1)">Next</a>
+        </li>
+    </ul>
+</nav>

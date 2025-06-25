@@ -1,0 +1,66 @@
+﻿@model NewsWebsite.Models.Article
+@{
+    ViewData["Title"] = "تعديل الخبر";
+}
+
+<h2>تعديل الخبر</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content" class="control-label"></label>
+        <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CategoryId" class="control-label"></label>
+        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ImageUrl" class="control-label">صورة الخبر الحالية</label>
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="img-fluid mb-2" style="max-width: 200px;" />
+        }
+        <input asp-for="ImageUrl" type="file" class="form-control" accept="image/*" />
+    </div>
+    <div class="form-group">
+        <label asp-for="VideoUrl" class="control-label">فيديو الخبر الحالي</label>
+        @if (!string.IsNullOrEmpty(Model.VideoUrl))
+        {
+            <video controls class="img-fluid mb-2" style="max-width: 200px;">
+                <source src="@Model.VideoUrl" type="video/mp4">
+            </video>
+        }
+        <input asp-for="VideoUrl" type="file" class="form-control" accept="video/*" />
+    </div>
+    <div class="form-group">
+        <label asp-for="AudioUrl" class="control-label">ملف صوتي حالي</label>
+        @if (!string.IsNullOrEmpty(Model.AudioUrl))
+        {
+            <audio controls class="mb-2" style="max-width: 200px;">
+                <source src="@Model.AudioUrl" type="audio/mpeg">
+            </audio>
+        }
+        <input asp-for="AudioUrl" type="file" class="form-control" accept="audio/*" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IsPublished" class="control-label">منشور؟</label>
+        <input asp-for="IsPublished" type="checkbox" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="حفظ التغييرات" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

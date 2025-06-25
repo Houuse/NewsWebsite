@@ -1,0 +1,10 @@
+obj/
+obj/*
+bin/
+bin/*
+*.DotSettings.user
+.idea/
+.vs/
+.vs/*
+.editorconfig
+*.*/obj
