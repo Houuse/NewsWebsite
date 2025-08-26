@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Data;
 using NewsWebsite.Models;
 using NewsWebsite.Areas.Admin.Controllers;
-
+using Microsoft.AspNetCore.Builder;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     // In Production for remote server
-    // options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-    // For local development using local sqlite db file
-    options.UseSqlite("Data Source=app.db"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// For local development using local sqlite db file
+// options.UseSqlite("Data Source=app.db"));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -30,6 +30,10 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+else
+{
+    app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
