@@ -28,4 +28,12 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Views\Analytics\Dashboard.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Article\Index.cshtml" />
+  </ItemGroup>
+
 </Project>

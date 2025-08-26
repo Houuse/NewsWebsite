@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Data;
 using NewsWebsite.Models;
-using NewsWebsite.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Builder;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,11 +42,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Article}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

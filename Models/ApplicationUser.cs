@@ -14,7 +14,7 @@ namespace NewsWebsite.Models
 
         public string? ProfileImageUrl { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Article> Articles { get; set; } =  new List<Article>();
+        public virtual ICollection<Comment> Comments { get; set; } =  new List<Comment>();
     }
 }

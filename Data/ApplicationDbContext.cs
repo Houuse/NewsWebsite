@@ -15,15 +15,10 @@ namespace NewsWebsite.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<ArticleTag> ArticleTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            // Configure composite key for ArticleTag
-            builder.Entity<ArticleTag>()
-                .HasKey(at => new { at.ArticleId, at.TagId });
 
             // Seed initial categories
             builder.Entity<Category>().HasData(

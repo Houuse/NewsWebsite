@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Models;
 
 namespace NewsWebsite.Data
@@ -35,6 +36,23 @@ namespace NewsWebsite.Data
                 {
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
+            }
+
+            var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var helloWorld = "Hello World";
+            var firstArticle = await db.Articles.Where(a => a.Title == helloWorld)
+                .FirstOrDefaultAsync();
+            if (firstArticle == null)
+            {
+                db.Articles.Add(new Article
+                {
+                    AuthorId = user!.Id,
+                    CategoryId = db.Categories.First().Id,
+                    Title = helloWorld,
+                    Content = "Hello World!",
+                    PublishDate = DateTime.Now
+                });
+                await db.SaveChangesAsync();
             }
         }
     }

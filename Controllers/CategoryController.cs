@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Data;
 using NewsWebsite.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace NewsWebsite.Areas.Admin.Controllers
+namespace NewsWebsite.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin,Editor")]
@@ -77,8 +75,10 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     {
                         return NotFound();
                     }
+
                     throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 

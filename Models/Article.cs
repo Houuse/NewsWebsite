@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewsWebsite.Models
 {
@@ -19,10 +20,10 @@ namespace NewsWebsite.Models
         public DateTime PublishDate { get; set; }
 
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public string AuthorId { get; set; }
-        public ApplicationUser Author { get; set; }
+        public virtual ApplicationUser Author { get; set; }
 
         public string? ImageUrl { get; set; }
         public string? VideoUrl { get; set; }
@@ -30,7 +31,7 @@ namespace NewsWebsite.Models
 
         public bool IsPublished { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
-        public ICollection<ArticleTag> ArticleTags { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

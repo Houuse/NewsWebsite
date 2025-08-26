@@ -11,7 +11,7 @@
             @foreach (var article in category.Articles.Take(3))
             {
                 <div class="card mb-3">
-                    @if (!string.IsNullOrEmpty(article.ImageUrl))
+                    @if (!string.IsNullOrEmpty(article.ImageUrl) && !string.IsNullOrEmpty(article.Title))
                     {
                         <img src="@article.ImageUrl" class="card-img-top" alt="@article.Title">
                     }

@@ -7,19 +7,12 @@ using System.Threading.Tasks;
 
 namespace NewsWebsite.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ApplicationDbContext context) : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public HomeController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories
-                .Include(c => c.Articles.Where(a => a.IsPublished))
+            var categories = await context.Categories
+                .Include(c => c.Articles).ThenInclude(a=>a.Author)
                 .ToListAsync();
             return View(categories);
         }
@@ -27,7 +20,7 @@ namespace NewsWebsite.Controllers
         public async Task<IActionResult> Search(string searchTerm, int page = 1)
         {
             int pageSize = 10;
-            var query = _context.Articles
+            var query = context.Articles
                 .Where(a => a.IsPublished && (string.IsNullOrEmpty(searchTerm) || a.Title.Contains(searchTerm) || a.Content.Contains(searchTerm)))
                 .Include(a => a.Category)
                 .Include(a => a.Author)

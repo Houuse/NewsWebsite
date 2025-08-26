@@ -12,8 +12,8 @@ using NewsWebsite.Data;
 namespace NewsWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250825164308_InitialSchema")]
-    partial class InitialSchema
+    [Migration("20250826193457_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace NewsWebsite.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.Property<int>("ArticlesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticlesId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("ArticleTag");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -283,21 +298,6 @@ namespace NewsWebsite.Migrations
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("NewsWebsite.Models.ArticleTag", b =>
-                {
-                    b.Property<int>("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticleId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("ArticleTags");
-                });
-
             modelBuilder.Entity("NewsWebsite.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -350,7 +350,6 @@ namespace NewsWebsite.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AuthorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CommentDate")
@@ -385,6 +384,21 @@ namespace NewsWebsite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.HasOne("NewsWebsite.Models.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NewsWebsite.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -457,25 +471,6 @@ namespace NewsWebsite.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("NewsWebsite.Models.ArticleTag", b =>
-                {
-                    b.HasOne("NewsWebsite.Models.Article", "Article")
-                        .WithMany("ArticleTags")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NewsWebsite.Models.Tag", "Tag")
-                        .WithMany("ArticleTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("NewsWebsite.Models.Comment", b =>
                 {
                     b.HasOne("NewsWebsite.Models.Article", "Article")
@@ -486,9 +481,7 @@ namespace NewsWebsite.Migrations
 
                     b.HasOne("NewsWebsite.Models.ApplicationUser", "Author")
                         .WithMany("Comments")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Article");
 
@@ -504,19 +497,12 @@ namespace NewsWebsite.Migrations
 
             modelBuilder.Entity("NewsWebsite.Models.Article", b =>
                 {
-                    b.Navigation("ArticleTags");
-
                     b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("NewsWebsite.Models.Category", b =>
                 {
                     b.Navigation("Articles");
-                });
-
-            modelBuilder.Entity("NewsWebsite.Models.Tag", b =>
-                {
-                    b.Navigation("ArticleTags");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,6 +11,6 @@ namespace NewsWebsite.Models
         [StringLength(50)]
         public string Name { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
+        public virtual ICollection<Article> Articles { get; set; }  = new List<Article>();
     }
 }

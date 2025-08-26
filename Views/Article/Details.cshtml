@@ -33,9 +33,9 @@
 
         <h3>Tags</h3>
         <div>
-            @foreach (var tag in Model.ArticleTags)
+            @foreach (var tag in Model.Tags)
             {
-                <span class="badge bg-secondary">@tag.Tag.Name</span>
+                <span class="badge bg-secondary">@tag.Name</span>
             }
         </div>
 
@@ -46,7 +46,7 @@
                 <div class="card-body">
                     <p>@comment.Content</p>
                     <p class="text-muted">By @comment.Author.FullName on @comment.CommentDate.ToShortDateString()</p>
-                    @if (User.Identity.IsAuthenticated && (comment.AuthorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin")))
+                    @if (User.Identity.IsAuthenticated && (comment.Author.Id == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin")))
                     {
                         <form asp-controller="Comment" asp-action="DeleteComment" method="post" class="d-inline">
                             <input type="hidden" name="commentId" value="@comment.Id" />

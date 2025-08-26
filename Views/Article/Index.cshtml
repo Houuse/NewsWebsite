@@ -4,8 +4,8 @@
     int page = ViewBag.Page;
     int totalPages = ViewBag.TotalPages;
 }
+<h2>قائمة الأخبار</h2>
 
-<h1>@ViewData["Title"]</h1>
 <div class="row">
     @foreach (var article in Model)
     {
@@ -18,7 +18,9 @@
                 <div class="card-body">
                     <h5 class="card-title"><a asp-action="Details" asp-route-id="@article.Id">@article.Title</a></h5>
                     <p class="card-text">@article.Content.Substring(0, Math.Min(100, article.Content.Length))...</p>
-                    <p class="card-text"><small class="text-muted">By @article.Author.FullName on @article.PublishDate.ToShortDateString()</small></p>
+                    <p class="card-text"><small
+                            class="text-muted">By @article.Author.FullName on @article.PublishDate.ToShortDateString()</small>
+                    </p>
                 </div>
             </div>
         </div>
@@ -34,7 +36,8 @@
         @for (int i = 1; i <= totalPages; i++)
         {
             <li class="page-item @(i == page ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-category="@ViewBag.Category" asp-route-page="@i">@i</a>
+                <a class="page-link" asp-action="Index" asp-route-category="@ViewBag.Category"
+                   asp-route-page="@i">@i</a>
             </li>
         }
         <li class="page-item @(page == totalPages ? "disabled" : "")">
@@ -42,3 +45,76 @@
         </li>
     </ul>
 </nav>
+
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <label>فئة:</label>
+        <select asp-items="ViewBag.Categories" name="category" class="form-control" onchange="this.form.submit()">
+            <option value="">الكل</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>الحالة:</label>
+        <select name="IsPublished" class="form-control" onchange="this.form.submit()">
+            @foreach (var item in (List<(string Text, bool? Value)>)
+                          [
+                              (Text: "الكل", Value: null),
+                              (Text: "منشور", Value: true),
+                              (Text: "غير منشور", Value: false)
+                          ])
+            {
+                if (ViewBag.IsPublished == item.Value)
+                {
+                    <option value=@item.Value selected>@item.Text</option>
+                }
+                else
+                {
+                    <option value=@item.Value>@item.Text</option>
+                }
+            }
+        </select>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>العنوان</th>
+        <th>الفئة</th>
+        <th>الكاتب</th>
+        <th>تاريخ النشر</th>
+        <th>الحالة</th>
+        @if (User.IsInRole("ADMIN") || User.IsInRole("AUTHOR") || User.IsInRole("EDITOR"))
+        {
+            <th>الإجراءات</th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Title</td>
+            <td>@item.Category.Name</td>
+            <td>@item.Author.FullName</td>
+            <td>@item.PublishDate.ToShortDateString()</td>
+            <td>@(item.IsPublished ? "منشور" : "غير منشور")</td>
+            @if (User.IsInRole("ADMIN") || User.IsInRole("AUTHOR") || User.IsInRole("EDITOR"))
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">تعديل</a>
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" asp-for="@item.Id"/>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('هل أنت متأكد من حذف الخبر؟');">حذف
+                        </button>
+                    </form>
+                    <a asp-action="TogglePublish" asp-route-id="@item.Id"
+                       class="btn btn-info btn-sm">@(item.IsPublished ? "إلغاء النشر" : "نشر")</a>
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
